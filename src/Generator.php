@@ -139,13 +139,12 @@ class Generator implements GeneratorInterface
 
         foreach ($types as $typeNode) {
             $type = null;
-            $typeNodeName = $this->config->get('ucFirstClassNames') ? ucfirst($typeNode->getName()) : $typeNode->getName();
 
             if ($typeNode->isComplex()) {
                 if ($typeNode->isArray()) {
-                    $type = new ArrayType($this->config, $typeNodeName);
+                    $type = new ArrayType($this->config, $typeNode->getName());
                 } else {
-                    $type = new ComplexType($this->config, $typeNodeName);
+                    $type = new ComplexType($this->config, $typeNode->getName());
                 }
 
                 $this->log('Loading type ' . $type->getPhpIdentifier());
@@ -160,12 +159,12 @@ class Generator implements GeneratorInterface
                     $type->addMember($typeName, $name, $nullable);
                 }
             } elseif ($enumValues = $typeNode->getEnumerations()) {
-                $type = new Enum($this->config, $typeNodeName, $typeNode->getRestriction());
+                $type = new Enum($this->config, $typeNode->getName(), $typeNode->getRestriction());
                 array_walk($enumValues, function ($value) use ($type) {
                       $type->addValue($value);
                 });
             } elseif ($pattern = $typeNode->getPattern()) {
-                $type = new Pattern($this->config, $typeNodeName, $typeNode->getRestriction());
+                $type = new Pattern($this->config, $typeNode->getName(), $typeNode->getRestriction());
                 $type->setValue($pattern);
             }
 
@@ -180,7 +179,7 @@ class Generator implements GeneratorInterface
                     }
                 }
                 if (!$already_registered) {
-                    $this->types[$typeNodeName] = $type;
+                    $this->types[$typeNode->getName()] = $type;
                 }
             }
         }
@@ -189,10 +188,8 @@ class Generator implements GeneratorInterface
         // We can only do this once all types have been loaded. Otherwise we risk referencing types which have not been
         // loaded yet.
         foreach ($types as $type) {
-            $baseType = $this->config->get('ucFirstClassNames') ? ucfirst($type->getBase()) : $type->getBase();
-            $typeName = $this->config->get('ucFirstClassNames') ? ucfirst($type->getName()) : $type->getName();
-            if ($baseType && isset($this->types[$baseType]) && $this->types[$baseType] instanceof ComplexType) {
-                $this->types[$typeName]->setBaseType($this->types[$baseType]);
+            if (($baseType = $type->getBase()) && isset($this->types[$baseType]) && $this->types[$baseType] instanceof ComplexType) {
+                $this->types[$type->getName()]->setBaseType($this->types[$baseType]);
             }
         }
 

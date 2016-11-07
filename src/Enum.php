@@ -45,8 +45,9 @@ class Enum extends Type
         if ($this->class != null) {
             throw new Exception("The class has already been generated");
         }
+        $className = $this->config->get('ucFirstClassNames') ? ucfirst($this->phpIdentifier) : $this->phpIdentifier;
 
-        $this->class = new PhpClass($this->phpIdentifier, false);
+        $this->class = new PhpClass($className, false);
 
         $first = true;
 

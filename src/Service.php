@@ -181,7 +181,8 @@ class Service implements ClassGenerator
         $init = array();
         foreach ($this->types as $type) {
             if ($type instanceof ComplexType) {
-                $init[$type->getIdentifier()] = $this->config->get('namespaceName') . "\\" . $type->getPhpIdentifier();
+                $className = $this->config->get('ucFirstClassNames') ? ucfirst($type->getPhpIdentifier()) : $type->getPhpIdentifier();
+                $init[$type->getIdentifier()] = $this->config->get('namespaceName') . "\\" . $className;
             }
         }
         $var = new PhpVariable('private static', $name, var_export($init, true), $comment);
