@@ -189,8 +189,10 @@ class Generator implements GeneratorInterface
         // We can only do this once all types have been loaded. Otherwise we risk referencing types which have not been
         // loaded yet.
         foreach ($types as $type) {
-            if (($baseType = $type->getBase()) && isset($this->types[$baseType]) && $this->types[$baseType] instanceof ComplexType) {
-                $this->types[$type->getName()]->setBaseType($this->types[$baseType]);
+            $baseType = $this->config->get('ucFirstClassNames') ? ucfirst($type->getBase()) : $type->getBase();
+            $typeName = $this->config->get('ucFirstClassNames') ? ucfirst($type->getName()) : $type->getName();
+            if ($baseType && isset($this->types[$baseType]) && $this->types[$baseType] instanceof ComplexType) {
+                $this->types[$typeName]->setBaseType($this->types[$baseType]);
             }
         }
 
