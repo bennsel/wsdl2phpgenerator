@@ -139,12 +139,13 @@ class Generator implements GeneratorInterface
 
         foreach ($types as $typeNode) {
             $type = null;
+            $typeNodeName = $this->config->get('ucFirstClassNames') ? ucfirst($typeNode->getName()) : $typeNode->getName();
 
             if ($typeNode->isComplex()) {
                 if ($typeNode->isArray()) {
-                    $type = new ArrayType($this->config, $typeNode->getName());
+                    $type = new ArrayType($this->config, $typeNodeName);
                 } else {
-                    $type = new ComplexType($this->config, $typeNode->getName());
+                    $type = new ComplexType($this->config, $typeNodeName);
                 }
 
                 $this->log('Loading type ' . $type->getPhpIdentifier());
@@ -159,12 +160,12 @@ class Generator implements GeneratorInterface
                     $type->addMember($typeName, $name, $nullable);
                 }
             } elseif ($enumValues = $typeNode->getEnumerations()) {
-                $type = new Enum($this->config, $typeNode->getName(), $typeNode->getRestriction());
+                $type = new Enum($this->config, $typeNodeName, $typeNode->getRestriction());
                 array_walk($enumValues, function ($value) use ($type) {
                       $type->addValue($value);
                 });
             } elseif ($pattern = $typeNode->getPattern()) {
-                $type = new Pattern($this->config, $typeNode->getName(), $typeNode->getRestriction());
+                $type = new Pattern($this->config, $typeNodeName, $typeNode->getRestriction());
                 $type->setValue($pattern);
             }
 
@@ -179,7 +180,7 @@ class Generator implements GeneratorInterface
                     }
                 }
                 if (!$already_registered) {
-                    $this->types[$typeNode->getName()] = $type;
+                    $this->types[$typeNodeName] = $type;
                 }
             }
         }

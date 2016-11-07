@@ -69,6 +69,7 @@ class Config implements ConfigInterface
             'verbose'                        => false,
             'namespaceName'                  => '',
             'classNames'                     => '',
+            'ucFirstClassNames'              => false,
             'operationNames'                 => '',
             'sharedTypes'                    => false,
             'constructorParamsDefaultToNull' => false,

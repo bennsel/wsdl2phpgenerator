@@ -134,6 +134,10 @@ $generator->generate(
     ))
 );
 ```
+#### `ucFirstClassNames`
+
+If enabled this forced all class names first upper cased
+
 #### `operationNames`
 
 A comma-separated list or array of service operations to generate. This will only generate types that are needed for selected operations. The generated service class will only contain selected operation.
